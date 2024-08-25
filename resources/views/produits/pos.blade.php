@@ -7,14 +7,6 @@
               <div class="col-12 col-sm-12 col-md-5 col-lg-5">
                 <div class="card-header">
                       <div class="col--md-4">
-                            <select class="customselect" id="membre" name="membre">
-                                <option value="0" >Aucun Membre</option>
-                                    @foreach($membres as $membre)
-                                        <option
-                                            
-                                         value="{{$membre->id}}">{{$membre->nom}} {{$membre->prenom}}</option>
-                                    @endforeach
-                            </select>
 
                       </div>
 
@@ -30,7 +22,6 @@
                           <th>Produit</th>
                           <th>Quantité</th>
                           <th>Prix</th>
-                          <th>Action</th>
 
                         </tr>
                       </thead>
@@ -71,13 +62,13 @@
                         <label for=""><p>Remise</p></label>
                       </div>
                       <div class="col-3 col-sm-3 col-md-3 col-offset-2 col-lg-3">
-                        <div class="input-group  " id="remiseinput">
+                        <div class="input-group input-group-sm ">
                           <input class="form-control" name="remise" id="remise" type="number" placeholder="remise"/>
                         </div>
                        
                       </div>
                     </div>
-                    <br>
+
                     <div class="row">
                       <div class="col-8 col-sm-8 col-md-8 col-lg-8">
                         <label for=""><p>Total Final</p></label>
@@ -109,7 +100,7 @@
                   <div class="col-6 col-sm-6 col-md-3 col-lg-3 mt-2 produitclass produitid{{$produit->id}}" >
                     <div class="card p-0 m-0">
                       <div class="card-body p-0 m-0 b-0" class="photo" id="{{$produit->id}}">
-                        <img src="{{asset('noproduct.jpeg')}}" alt="" class="img-thumbnail">
+                        <img src="{{asset('default.png')}}" alt="" class="img-thumbnail">
                       </div>
                       <div class="title">
                         <h2 class="names" id="{{$produit->id}}">
@@ -127,7 +118,7 @@
                               </span>
                           </div>
                           <div class="col-6 col-sm-6 col-md-6 col-lg-6 text-right">
-                            <a href="#" class="btn btn-primary btnadd" id="{{$produit->id ?? ''}}" >
+                            <a href="#" class="btn btn-info btnadd" id="{{$produit->id ?? ''}}" >
                               <i class="fa fa-cart-plus" aria-hidden="true"></i>
                             </a>
                             <a href="#" class="btn btn-danger btnremove" id="{{$produit->id ?? ''}}"  >   
@@ -175,11 +166,6 @@
                         '<td style="font-size:30px;">' + item.name + '</td>' +
                         '<td style="font-size:30px;">' + item.qte + '</td>' +
                         '<td style="font-size:30px;">' + item.prix + ' DA</td>' +
-                        '<td style="font-size:30px;">'+
-                        '<td><a  class="btn btn-sm btn-primary btn-block" role="button">Update</a></td>'+
-                        '<td><a  class="btn btn-sm btn-danger btn-block" role="button"><i class="fa fa-trash"></i> Supprimer</a></td>'+
-
-                        +'</td>' +
                         '</tr>';
 
                 }
@@ -196,21 +182,19 @@
         $('#total').html(total+' DA ')
     }
     $(document).ready(function() {
-          $('#remiseinput').hide();
+
           $('.js-example-basic-single').select2({
             'width':"100%"
           });
         var pos=-1;
        const jsonObj = [
             @foreach ($produits as $produit)
-                {numero:<?php echo json_decode($produit->id); ?>,name:'{{$produit->nom}}',prix:<?php echo json_decode($produit->prix_vente); ?>, qte: 0,max:<?php echo json_decode($produit->qte); ?>},
+                {codebar:<?php echo json_decode($produit->codebar); ?>,numero:<?php echo json_decode($produit->id); ?>,name:'{{$produit->nom}}',prix:<?php echo json_decode($produit->prix_vente); ?>, qte: 0,max:<?php echo json_decode($produit->qte); ?>},
             @endforeach
        ]
        console.log(jsonObj)
 
         $('.btnadd').on('click',function() {
-          $('#remiseinput').show()
-
             $('#tablebody').html('');
 
             console.log('ajouter :  '+this.id)
@@ -243,30 +227,43 @@
         })
 
 
-        $('#searchproduct').on('keyup',function(){
+        $('#searchproduct').on('change',function(){
          console.log($('#searchproduct').val())
           if($('#searchproduct').val().length == 0){
             $('.produitclass').show()            
           }else{
-            $('.produitclass').hide()            
+            // $('.produitclass').hide()            
 
             
-             const jsonObj = [
-                  @foreach ($produits as $produit)
-                      {numero:<?php echo json_decode($produit->id); ?>,name:'{{$produit->nom}}',prix:<?php echo json_decode($produit->prix_vente); ?>, qte: 0,max:<?php echo json_decode($produit->qte); ?>},
-                  @endforeach
-             ] 
+            // for (var i = 0; i < jsonObj.length; i++) {
+            //     pos = i;
+            //   if (jsonObj[i].name.toLowerCase().indexOf($('#searchproduct').val())>-1) {
+            //     $('.produitid'+jsonObj[i].numero).show()
+            //   }
+            // }
+
+
+            $('#tablebody').html('');
+
+            // console.log('ajouter :  '+this.id)
             for (var i = 0; i < jsonObj.length; i++) {
                 pos = i;
-              if (jsonObj[i].name.toLowerCase().indexOf($('#searchproduct').val())>-1) {
-                $('.produitid'+jsonObj[i].numero).show()
+              if (jsonObj[i].codebar == $('#searchproduct').val()) {
+                if(jsonObj[i].max<=jsonObj[i].qte){
+                        // toastr.error("Hors Stock")
+                }
+                jsonObj[i].qte = jsonObj[i].qte+1;
+                break;
               }
             }
 
-      
+         $('#searchproduct').val('')
+
 
           }
 
+           renderTable(jsonObj)
+           calculateSum(jsonObj)
 
         })
         $('.btnremove').on('click',function () {

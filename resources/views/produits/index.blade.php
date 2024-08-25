@@ -28,7 +28,6 @@
       <div class="container">
         <div class="row mb-2">
           <div class="col-sm-4">
-              
                         <button data-toggle="modal" data-target="#squarespaceModal" class="btn bubbly-button btn-lg">
                                     Ajouter Produit
                                 </button>
@@ -41,7 +40,55 @@
     </div>
                     <div class="card">
                             <div class="card-body table1">
-                                    
+
+                               <div class="row">
+                                        <div class="col-lg-4 col-12">
+                                            <div class="small-box bg-info">
+                                              <div class="inner">
+                                                <?php $Total =0; ?>
+                                                @foreach($produits as $produit)
+                                                    <?php $Total =$Total+$produit->prix_achat*$produit->qte; ?>
+                                                @endforeach
+                                                <h3>Total Achat : {{$Total}} DA </h3>
+                                                <p>
+                                                </p>
+                                              </div>
+                                              <div class="icon">
+                                                <i class="ion ion-bag"></i>
+                                              </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-12">
+                                            <div class="small-box bg-info">
+                                              <div class="inner">
+                                                <?php $Total2 =0; ?>
+                                                  @foreach($produits as $produit)
+                                                    <?php $Total2 =$Total2+$produit->prix_vente*$produit->qte; ?>
+                                                @endforeach
+                                                <h3>Total Vente : {{$Total2}} DA </h3>
+                                                <p>
+                                                </p>
+                                              </div>
+                                              <div class="icon">
+                                                <i class="ion ion-bag"></i>
+                                              </div>
+                                            </div>
+                                        </div> 
+
+                                            <div class="col-lg-4 col-12">
+                                            <div class="small-box bg-info">
+                                              <div class="inner">
+                                                  
+                                                <h3>Net prévu : {{$Total2-$Total}} DA </h3>
+                                                <p>
+                                                </p>
+                                              </div>
+                                              <div class="icon">
+                                                <i class="ion ion-bag"></i>
+                                              </div>
+                                            </div>
+                                        </div> 
+                                    </div>
                                     
                                 
                                 <div class="table-responsive">
@@ -49,6 +96,7 @@
                                         <thead>
                                             <tr>
                                                 <th>ID produit</th>
+                                                <th>Code bare</th>
                                                 <th>Nom produit </th>
                                                 <th> Qte </th>
                                                 <th> Prix Achat </th>
@@ -65,6 +113,7 @@
                                             <tr>
 
                                                 <td>{{$produit->id ?? ''}}</td>
+                                                <td>{{$produit->codebar ?? ''}}</td>
                                                 <td>
                                                     {{$produit->nom ?? ''}} 
                                                 </td>
@@ -81,6 +130,13 @@
                                                         class="btn btn-danger   text-gradient px-3 mb-0" onclick="return confirm('etes vous sure  ?')" >
                                                             <i class="far fa-trash-alt me-2"></i>
                                                             Delete
+                                                        </a>
+
+                                                        <a 
+                                                        href="{{route('produit.history',['produit'=>$produit->id])}}"
+                                                        class="btn btn-danger   text-gradient px-3 mb-0" >
+                                                            <i class="fa fa-list"></i>
+                                                            Historique
                                                         </a>
 
                                                         <button data-toggle="modal" data-target="#squarespaceModal{{$produit->id}}" class="btn btn-info text-dark px-3 mb-0">
@@ -126,6 +182,12 @@
                 <form action="{{route('produit.create')}}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
+                        <label for="exampleInputEmail1">Code bar Produit</label>
+                        <input type="text" value="{{ old('codebar') }}" name="codebar" class="form-control"
+                            id="codebar" placeholder=" ">
+                    </div>
+
+                    <div class="form-group">
                         <label for="exampleInputEmail1">Nom Produit</label>
                         <input type="text" value="{{ old('nom') }}" name="nom" class="form-control"
                             id="exampleInputEmail1" placeholder=" ">
@@ -151,14 +213,14 @@
 
                     <div class="form-group">
                         <label for="exampleInputEmail1">Photo : </label>
-                        <input type="file" value="{{ old('photo') }}" name="photo" class="form-control" id="photo"
+                        <input type="file" value="{{ old('photo') }}" name="photo" class="form-file" id="photo"
                             placeholder="">
                     </div>
 
 
 
                     <div class="btn-group" role="group">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
                     </div>
                     <button type="button" class="btn btn-danger" data-dismiss="modal" role="button">Fermer</button>
                 </form>

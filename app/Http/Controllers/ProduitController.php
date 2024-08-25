@@ -7,6 +7,7 @@ use App\Wilaya;
 use App\Stock;
 use App\Membre;
 use App\Achat;
+use App\Item;
 use Carbon\Carbon;
 use App\Produit;
 use App\Categorie;
@@ -42,6 +43,7 @@ class ProduitController extends Controller
 
         $produit = new Produit();   
         $produit->nom= $request->get('nom');
+        $produit->codebar= $request->get('codebar');
         $produit->prix_achat = $request['prix_achat'];
         $produit->prix_vente = $request['prix_vente'];
         $produit->qte = $request['qte'];
@@ -69,6 +71,13 @@ class ProduitController extends Controller
         return view('produits.view',compact('produit'));
     }
 
+
+    public function history($id_produit)
+    {
+        $items = Item::where('produit',$id_produit)->get();
+        $produit = Produit::find($id_produit);
+        return view('produits.history',compact('items','produit'));
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -89,6 +98,7 @@ class ProduitController extends Controller
     {   
         $produit = Produit::find($produit);
         $produit->nom= $request->get('nom2');
+        $produit->codebar= $request->get('codebar2');
         $produit->prix_achat = $request['prix_achat2'];
         $produit->prix_vente = $request['prix_vente2'];
         $produit->qte = $request['qte2'];

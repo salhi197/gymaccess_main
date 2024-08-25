@@ -86,8 +86,6 @@ class CommandeController extends Controller
             $commande->membre = $request['membre'];
             // $commande->montant = $request['total'];
             $commande->user =Auth::user()->id;//$request['membre'];
-            $commande->remise =$request['remise'];//$request['membre'];
-            
             $commande->save();
             $elements = json_decode($request['elements']);
             $produits = array();
