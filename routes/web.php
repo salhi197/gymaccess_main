@@ -25,6 +25,7 @@ Route::get('/api/script3/{rfid}', 'ApiController@script3');
 Route::get('/api/close/script3/{rfid}', 'ApiController@script3Close');
 
 Route::post('/pos', 'CommandeController@store')->name('pos');
+Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
 
 
 Route::get('/test', function(){
