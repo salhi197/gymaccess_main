@@ -5,7 +5,7 @@
                 <div class="row text-center" >
                 </div>
             </div>
-            <!-- Time -->
+            <!-- Temps -->
                     <div class="card-group">
                         <div class="card-body text-white" >
 
@@ -73,44 +73,44 @@
 <script src="<?php echo e(asset('adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js')); ?>"></script>
 
 <script>
-        // Data from the Laravel controller
+        // Données provenant du contrôleur Laravel
         const abonnementData = <?php echo json_encode($abonnementData, 15, 512) ?>;
         const monthlyData = <?php echo json_encode($monthlyData, 15, 512) ?>;
         const statusData = <?php echo json_encode($statusData, 15, 512) ?>;
         const versementsData = <?php echo json_encode($versementsData, 15, 512) ?>;
         const differenceData = <?php echo json_encode($differenceData, 15, 512) ?>;
 
-        // Prepare data for the abonnement chart
+        // Préparer les données pour le graphique des abonnements
         const abonnementLabels = abonnementData.map(item => item.abonnement);
         const abonnementValues = abonnementData.map(item => item.total);
 
-        // Prepare data for the monthly chart
+        // Préparer les données pour le graphique mensuel
         const months = monthlyData.map(item => `${item.month}/${item.year}`);
         const monthlyCounts = monthlyData.map(item => item.total);
 
-        // Prepare data for the status chart
+        // Préparer les données pour le graphique des statuts
         const statusLabels = statusData.map(item => `${item.month}/${item.year}`);
         const activeCounts = statusData.map(item => item.active);
         const expiredCounts = statusData.map(item => item.expired);
 
-        // Prepare data for the versements chart
+        // Préparer les données pour le graphique des versements
         const versementsLabels = versementsData.map(item => `${item.month}/${item.year}`);
         const versementsTotals = versementsData.map(item => item.total_amount);
 
         const differenceLabels = differenceData.map(item => item.month);
         const differenceValues = differenceData.map(item => item.difference);
 
-        // Create abonnement chart
+        // Créer le graphique des abonnements
         const ctxAbonnement = document.getElementById('abonnementChart').getContext('2d');
         new Chart(ctxAbonnement, {
             type: 'bar',
             data: {
                 labels: abonnementLabels,
                 datasets: [{
-                    label: 'Count of Inscriptions by Abonnement',
+                    label: 'Nombre d\'inscriptions par Abonnement',
                     data: abonnementValues,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)', // Red color with transparency
-                    borderColor: 'rgba(255, 99, 132, 1)',      // Red color
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)', // Couleur rouge avec transparence
+                    borderColor: 'rgba(255, 99, 132, 1)',      // Couleur rouge
                     borderWidth: 1
                 }]
             },
@@ -118,7 +118,7 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#000000' // Legend text color
+                            color: '#000000' // Couleur du texte de la légende
                         }
                     }
                 },
@@ -126,39 +126,39 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            color: '#000000' // Y-axis text color
+                            color: '#000000' // Couleur du texte de l'axe Y
                         },
                         title: {
                             display: true,
-                            text: 'Count',
-                            color: '#000000' // Y-axis title color
+                            text: 'Nombre',
+                            color: '#000000' // Couleur du titre de l'axe Y
                         }
                     },
                     x: {
                         ticks: {
-                            color: '#000000' // X-axis text color
+                            color: '#000000' // Couleur du texte de l'axe X
                         },
                         title: {
                             display: true,
                             text: 'Abonnement',
-                            color: '#000000' // X-axis title color
+                            color: '#000000' // Couleur du titre de l'axe X
                         }
                     }
                 }
             }
         });
 
-        // Create monthly chart
+        // Créer le graphique mensuel
         const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
         new Chart(ctxMonthly, {
             type: 'bar',
             data: {
                 labels: months,
                 datasets: [{
-                    label: 'Number of Inscriptions per Month',
+                    label: 'Nombre d\'inscriptions par Mois',
                     data: monthlyCounts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Different color
-                    borderColor: 'rgba(75, 192, 192, 1)',      // Different color
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Couleur différente
+                    borderColor: 'rgba(75, 192, 192, 1)',      // Couleur différente
                     borderWidth: 1
                 }]
             },
@@ -166,7 +166,7 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#000000' // Legend text color
+                            color: '#000000' // Couleur du texte de la légende
                         }
                     }
                 },
@@ -174,29 +174,29 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            color: '#000000' // Y-axis text color
+                            color: '#000000' // Couleur du texte de l'axe Y
                         },
                         title: {
                             display: true,
-                            text: 'Number of Inscriptions',
-                            color: '#000000' // Y-axis title color
+                            text: 'Nombre d\'inscriptions',
+                            color: '#000000' // Couleur du titre de l'axe Y
                         }
                     },
                     x: {
                         ticks: {
-                            color: '#000000' // X-axis text color
+                            color: '#000000' // Couleur du texte de l'axe X
                         },
                         title: {
                             display: true,
-                            text: 'Month/Year',
-                            color: '#000000' // X-axis title color
+                            text: 'Mois/Année',
+                            color: '#000000' // Couleur du titre de l'axe X
                         }
                     }
                 }
             }
         });
 
-        // Create active vs. expired chart
+        // Créer le graphique des statuts (actif vs expiré)
         const ctxStatus = document.getElementById('statusChart').getContext('2d');
         new Chart(ctxStatus, {
             type: 'bar',
@@ -204,17 +204,17 @@
                 labels: statusLabels,
                 datasets: [
                     {
-                        label: 'Active Inscriptions',
+                        label: 'Inscriptions Actives',
                         data: activeCounts,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)', // Blue color with transparency
-                        borderColor: 'rgba(54, 162, 235, 1)',      // Blue color
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)', // Couleur bleue avec transparence
+                        borderColor: 'rgba(54, 162, 235, 1)',      // Couleur bleue
                         borderWidth: 1
                     },
                     {
-                        label: 'Expired Inscriptions',
+                        label: 'Inscriptions Expirées',
                         data: expiredCounts,
-                        backgroundColor: 'rgba(255, 159, 64, 0.2)', // Orange color with transparency
-                        borderColor: 'rgba(255, 159, 64, 1)',      // Orange color
+                        backgroundColor: 'rgba(255, 159, 64, 0.2)', // Couleur orange avec transparence
+                        borderColor: 'rgba(255, 159, 64, 1)',      // Couleur orange
                         borderWidth: 1
                     }
                 ]
@@ -223,7 +223,7 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#000000' // Legend text color
+                            color: '#000000' // Couleur du texte de la légende
                         }
                     }
                 },
@@ -231,39 +231,39 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            color: '#000000' // Y-axis text color
+                            color: '#000000' // Couleur du texte de l'axe Y
                         },
                         title: {
                             display: true,
-                            text: 'Number of Inscriptions',
-                            color: '#000000' // Y-axis title color
+                            text: 'Nombre d\'inscriptions',
+                            color: '#000000' // Couleur du titre de l'axe Y
                         }
                     },
                     x: {
                         ticks: {
-                            color: '#000000' // X-axis text color
+                            color: '#000000' // Couleur du texte de l'axe X
                         },
                         title: {
                             display: true,
-                            text: 'Month/Year',
-                            color: '#000000' // X-axis title color
+                            text: 'Mois/Année',
+                            color: '#000000' // Couleur du titre de l'axe X
                         }
                     }
                 }
             }
         });
 
-        // Create versements chart
+        // Créer le graphique des versements
         const ctxVersements = document.getElementById('versementsChart').getContext('2d');
         new Chart(ctxVersements, {
             type: 'line',
             data: {
                 labels: versementsLabels,
                 datasets: [{
-                    label: 'Total Montant per Month',
+                    label: 'Montant Total par Mois',
                     data: versementsTotals,
-                    borderColor: 'rgba(153, 102, 255, 1)', // Purple color
-                    backgroundColor: 'rgba(153, 102, 255, 0.2)', // Purple color with transparency
+                    borderColor: 'rgba(153, 102, 255, 1)', // Couleur violette
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)', // Couleur violette avec transparence
                     borderWidth: 2,
                     fill: true
                 }]
@@ -272,7 +272,7 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#000000' // Legend text color
+                            color: '#000000' // Couleur du texte de la légende
                         }
                     }
                 },
@@ -280,38 +280,39 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            color: '#000000' // Y-axis text color
+                            color: '#000000' // Couleur du texte de l'axe Y
                         },
                         title: {
                             display: true,
-                            text: 'Total Montant',
-                            color: '#000000' // Y-axis title color
+                            text: 'Montant Total',
+                            color: '#000000' // Couleur du titre de l'axe Y
                         }
                     },
                     x: {
                         ticks: {
-                            color: '#000000' // X-axis text color
+                            color: '#000000' // Couleur du texte de l'axe X
                         },
                         title: {
                             display: true,
-                            text: 'Month/Year',
-                            color: '#000000' // X-axis title color
+                            text: 'Mois/Année',
+                            color: '#000000' // Couleur du titre de l'axe X
                         }
                     }
                 }
             }
         });
 
+        // Créer le graphique des différences
         const ctxDifference = document.getElementById('differenceChart').getContext('2d');
         new Chart(ctxDifference, {
             type: 'bar',
             data: {
                 labels: differenceLabels,
                 datasets: [{
-                    label: 'Difference Between Total and Versements',
+                    label: 'Différence entre Total et Versements',
                     data: differenceValues,
-                    backgroundColor: 'rgba(255, 206, 86, 0.2)', // Yellow color with transparency
-                    borderColor: 'rgba(255, 206, 86, 1)',      // Yellow color
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)', // Couleur jaune avec transparence
+                    borderColor: 'rgba(255, 206, 86, 1)',      // Couleur jaune
                     borderWidth: 1
                 }]
             },
@@ -319,7 +320,7 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#000000' // Legend text color
+                            color: '#000000' // Couleur du texte de la légende
                         }
                     }
                 },
@@ -327,22 +328,22 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            color: '#000000' // Y-axis text color
+                            color: '#000000' // Couleur du texte de l'axe Y
                         },
                         title: {
                             display: true,
-                            text: 'Difference',
-                            color: '#000000' // Y-axis title color
+                            text: 'Différence',
+                            color: '#000000' // Couleur du titre de l'axe Y
                         }
                     },
                     x: {
                         ticks: {
-                            color: '#000000' // X-axis text color
+                            color: '#000000' // Couleur du texte de l'axe X
                         },
                         title: {
                             display: true,
-                            text: 'Month/Year',
-                            color: '#000000' // X-axis title color
+                            text: 'Mois/Année',
+                            color: '#000000' // Couleur du titre de l'axe X
                         }
                     }
                 }
@@ -351,4 +352,5 @@
     </script>
 
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

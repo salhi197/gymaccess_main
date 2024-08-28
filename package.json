@@ -1,0 +1,24 @@
+{
+  "name": "gym_access",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "webpack --mode development",
+    "prod": "npm run production",
+    "production": "webpack --mode production",
+    "watch": "webpack --watch"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "vue-router": "^4.4.3"
+  },
+  "devDependencies": {
+    "laravel-mix": "^4.1.4",
+    "vue": "^2.7.16",
+    "vue-loader": "^15.11.1",
+    "vue-template-compiler": "^2.7.16",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
+}
