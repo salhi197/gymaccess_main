@@ -4,6 +4,9 @@
         <div class="container-fluid">
             <div class="card-header">
                 <div class="row text-center" >
+                    <h1>
+                        Tableau de Bord : 
+                    </h1>
                 </div>
             </div>
             <!-- Temps -->
