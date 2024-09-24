@@ -18,6 +18,11 @@ Route::get('/api/script1/{rfid}', 'ApiController@script1');
 Route::get('/api/close/script1/{rfid}', 'ApiController@script1Close');
 
 
+
+
+Route::get('/export', 'SettingController@export')->name('export');
+Route::get('/repairTables', 'SettingController@repairTables')->name('repairTables');
+
 Route::get('/api/script2/{rfid}', 'ApiController@script2');
 Route::get('/api/close/script2/{rfid}', 'ApiController@script2Close');
 

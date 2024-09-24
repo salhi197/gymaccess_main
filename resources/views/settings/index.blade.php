@@ -1,6 +1,61 @@
 @extends('layouts.master')
 
+@section('styles')
+    <style type="text/css">
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    float: right; /* Align the switch to the right */
+}
 
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50; /* Change color when checked */
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.label-text {
+    margin-left: 10px; /* Adjust spacing between switch and label */
+    font-size: 16px;   /* Adjust font size as needed */
+    vertical-align: middle; /* Aligns with the switch */
+}
+
+    </style>
+@endsection
 
 @section('content')
 <?php 
@@ -23,11 +78,11 @@ use App\Setting;
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>
-                                      Communication : 
+                                      Etat par feu : 
                                     </label>
-                                    <span class="badge badge-success">
-                                        Connecté
-                                    </span>
+                                    <h3 class="badge badge-success" style="font-size:20px;">
+                                        {{$firewall }}
+                                    </h3>
                                 </div>
 
                                 <div class="form-group">
@@ -79,6 +134,14 @@ use App\Setting;
                                     </label>
                                     <input value="{{Setting::getSetting('lien')}}" name="lien"  class="form-control"/>
                                 </div>
+
+                                <div class="form-group">
+                                    <label>
+                                       URL de serveur :  
+                                    </label>
+                                    <input value="{{Setting::getSetting('serveur')}}" name="serveur"  class="form-control"/>
+                                </div>
+                               
                                 <div class="form-group">
                                     <label>
                                         Nombre de Tourniquet : 
@@ -96,21 +159,33 @@ use App\Setting;
                                         <label>
                                             Voix Dans Modifier : 
                                         </label>
-                                    <input value="{{Setting::getSetting('voixedit')}}" name="voixedit"  class="form-control"/>
+                                    <label class="switch">
+                                        <input type="checkbox" name="toggle" id="toggleCheckbox" value="1" >
+                                        <span class="slider"></span>
+                                    </label>
+                                    <input type="hidden" name="voixedit" value="0">
                                 </div>
 
                                 <div class="form-group">
                                     <label>
                                             Camera: 
                                         </label>
-                                    <input value="{{Setting::getSetting('camera')}}" name="camera"  class="form-control"/>
+                                    <label class="switch">
+                                        <input type="checkbox" name="toggle" id="toggleCheckbox" value="1" >
+                                        <span class="slider"></span>
+                                    </label>
+                                    <input type="hidden" name="camera" value="0">
 
                                 </div>
                                 <div class="form-group">
-                                    <label>
-                                            Moins Seance Dans scanner : 
-                                        </label>
-                                    <input value="{{Setting::getSetting('minus')}}" name="minus"  class="form-control"/>
+                                    <label class="label-text">Moins dans Scanner : </label>
+
+                                    <label class="switch">
+                                        <input type="checkbox" name="toggle" id="toggleCheckbox" value="1" >
+                                        <span class="slider"></span>
+                                    </label>
+                                    <input type="hidden" name="minus" value="0">
+
 
                                 </div>
 
@@ -133,7 +208,23 @@ use App\Setting;
 
                                 <div class="form-group">
                                         <a href="{{route('clear.records')}}" class="btn  bubbly-button">
-                                            Vider La Liste des Entrés
+                                            <i class="fa fa-trash"></i> Vider La Liste des Entrés
+                                        </a>
+                                    </div>
+
+                                <div class="form-group">
+                                        <a href="/export" class="btn  bubbly-button">
+                                            Exporter
+                                        </a>
+                                    </div>
+                                    <div class="form-group">
+
+
+                                </div>
+
+                                    <div class="form-group">
+                                        <a href="/repairTables" class="btn  bubbly-button">
+                                            Réparer Les tables
                                         </a>
                                     </div>
                                     <div class="form-group">

@@ -7,123 +7,19 @@ use App\Membre;
 use App\Inscription;
 use App\Setting;
 use App\Ouverture;
+use App\Ouverture2;
+use App\Ouverture3;
 use App\Presence;
 use App\Entre;
 use App\Sortie;
+
+use App\Entre2;
+use App\Sortie2;
 
 use Storage;
 class ApiController extends Controller
 {
 
-    public function script1($rfid)
-    {
-        if($rfid==70000){
-            $ouverture = new Ouverture();
-            try {
-                $ouverture->save();
-            } catch (\Throwable $th) {
-                return response()->json(['reponse' => $th->getMessage()]);
-            }
-            return response()->json(['reponse' => 1]);    
-        }
-
-        $membre=Membre::where('matricule',$rfid)->first();
-        if($membre){
-            $inscription  = Inscription::where('membre',$membre->id)->first();
-            $entre = Entre::where('matricule',$rfid)->first();
-            // dd($entre);
-            
-            if(is_null($entre)){
-
-                $reponse = $membre->isAuthorised();
-                
-                if($reponse==1){
-                    $inscription  = Inscription::where(['membre'=>$membre->id,'etat'=>1])->first();
-                    $tripode = $inscription->tripode;
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, "http://192.168.0.177/open");
-                    $presence = new Presence();
-                    $presence->inscription = $inscription->id;
-                    $presence->membre = $membre->id;
-                    // $presence->activity = $setting->value;
-                    //Membre::getActivity();
-                    try {
-                        $presence->save();
-                    } catch (\Throwable $th) {
-                        return response()->json(['reponse' => $th->getMessage()]);
-                    }
-                    $inscription->reste = $inscription->reste - 1;
-                    $inscription->save();
-                    if($inscription->abonnement!=1){
-
-                        $liste = new Entre();
-                        $liste->matricule = $rfid;
-                        $liste->save(); 
-                        Storage::put('logs2.txt', $rfid);
-                        // Storage::put('logs.txt', $rfid);                           
-                    }
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    $output = curl_exec($ch);
-                    curl_close($ch);     
-                }else{
-
-                        $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
-                        if ($inscription->abonnement==1){
-                                $ch = curl_init();
-                                curl_setopt($ch, CURLOPT_URL, "http://192.168.0.177/open");
-                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                                $output = curl_exec($ch);
-                                curl_close($ch);     
-                                $presence = new Presence();
-                                $presence->inscription = $inscription->id;
-                                $presence->membre = $membre->id;
-                                // $presence->activity = $setting->value;
-                                //Membre::getActivity();
-                                try {
-                                        $presence->save();
-                                    } catch (\Throwable $th) {
-                                        return response()->json(['reponse' => $th->getMessage()]);
-                                }
-
-                        }else{
-                            Storage::put('logs2.txt', $rfid);
-                        }
-                        return 0;
-                }
-
-
-            }else{  
-                //dkhal deja mais admin
-                $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
-                
-                if ($inscription->abonnement==1){
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.177/open");
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                        $output = curl_exec($ch);
-                        curl_close($ch);     
-                        $presence = new Presence();
-                        $presence->inscription = $inscription->id;
-                        $presence->membre = $membre->id;
-                        // $presence->activity = $setting->value;
-                        //Membre::getActivity();
-                        try {
-                                $presence->save();
-                            } catch (\Throwable $th) {
-                                return response()->json(['reponse' => $th->getMessage()]);
-                        }
-
-                }else{                     
-                    // dd('sasaz');
-                    // dd($rfid."d");
-                    Storage::put('logs2.txt', $rfid."d");
-                    // Storage::put('logs.txt', $rfid);                           
-
-                }
-            }
-        }
-
-    }
 
 
     public function script1Close($rfid)
@@ -192,115 +88,6 @@ class ApiController extends Controller
 
 
 
-    public function script2($rfid)
-    {
-        if($rfid==70000){
-            $ouverture = new Ouverture();
-            try {
-                $ouverture->save();
-            } catch (\Throwable $th) {
-                return response()->json(['reponse' => $th->getMessage()]);
-            }
-            return response()->json(['reponse' => 1]);    
-        }
-
-        $membre=Membre::where('matricule',$rfid)->first();
-        if($membre){
-            $inscription  = Inscription::where('membre',$membre->id)->first();
-            $entre = Entre::where('matricule',$rfid)->first();
-            // dd($entre);
-            
-            if(is_null($entre)){
-
-                $reponse = $membre->isAuthorised();
-                
-                if($reponse==1){
-                    $inscription  = Inscription::where(['membre'=>$membre->id,'etat'=>1])->first();
-                    $tripode = $inscription->tripode;
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, "http://192.168.0.178/open");
-                    $presence = new Presence();
-                    $presence->inscription = $inscription->id;
-                    $presence->membre = $membre->id;
-                    // $presence->activity = $setting->value;
-                    //Membre::getActivity();
-                    try {
-                        $presence->save();
-                    } catch (\Throwable $th) {
-                        return response()->json(['reponse' => $th->getMessage()]);
-                    }
-                    $inscription->reste = $inscription->reste - 1;
-                    $inscription->save();
-                    if($inscription->abonnement!=1){
-
-                        $liste = new Entre();
-                        $liste->matricule = $rfid;
-                        $liste->save(); 
-                        Storage::put('logs2.txt', $rfid);
-                        // Storage::put('logs.txt', $rfid);                           
-                    }
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    $output = curl_exec($ch);
-                    curl_close($ch);     
-                }else{
-
-                        $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
-                        if ($inscription->abonnement==1){
-                                $ch = curl_init();
-                                curl_setopt($ch, CURLOPT_URL, "http://192.168.0.178/open");
-                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                                $output = curl_exec($ch);
-                                curl_close($ch);     
-                                $presence = new Presence();
-                                $presence->inscription = $inscription->id;
-                                $presence->membre = $membre->id;
-                                // $presence->activity = $setting->value;
-                                //Membre::getActivity();
-                                try {
-                                        $presence->save();
-                                    } catch (\Throwable $th) {
-                                        return response()->json(['reponse' => $th->getMessage()]);
-                                }
-
-                        }else{
-                            Storage::put('logs2.txt', $rfid);
-                        }
-                        return 0;
-                }
-
-
-            }else{  
-                //dkhal deja mais admin
-                $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
-                
-                if ($inscription->abonnement==1){
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.178/open");
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                        $output = curl_exec($ch);
-                        curl_close($ch);     
-                        $presence = new Presence();
-                        $presence->inscription = $inscription->id;
-                        $presence->membre = $membre->id;
-                        // $presence->activity = $setting->value;
-                        //Membre::getActivity();
-                        try {
-                                $presence->save();
-                            } catch (\Throwable $th) {
-                                return response()->json(['reponse' => $th->getMessage()]);
-                        }
-
-                }else{                     
-                    // dd('sasaz');
-                    // dd($rfid."d");
-                    Storage::put('logs2.txt', $rfid."d");
-                    // Storage::put('logs.txt', $rfid);                           
-
-                }
-            }
-        }
-
-    }
 
     
 
@@ -371,115 +158,6 @@ class ApiController extends Controller
 
 
 
-    public function script3($rfid)
-    {
-        if($rfid==70000){
-            $ouverture = new Ouverture();
-            try {
-                $ouverture->save();
-            } catch (\Throwable $th) {
-                return response()->json(['reponse' => $th->getMessage()]);
-            }
-            return response()->json(['reponse' => 1]);    
-        }
-
-        $membre=Membre::where('matricule',$rfid)->first();
-        if($membre){
-            $inscription  = Inscription::where('membre',$membre->id)->first();
-            $entre = Entre::where('matricule',$rfid)->first();
-            // dd($entre);
-            
-            if(is_null($entre)){
-
-                $reponse = $membre->isAuthorised();
-                
-                if($reponse==1){
-                    $inscription  = Inscription::where(['membre'=>$membre->id,'etat'=>1])->first();
-                    $tripode = $inscription->tripode;
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, "http://192.168.0.179/open");
-                    $presence = new Presence();
-                    $presence->inscription = $inscription->id;
-                    $presence->membre = $membre->id;
-                    // $presence->activity = $setting->value;
-                    //Membre::getActivity();
-                    try {
-                        $presence->save();
-                    } catch (\Throwable $th) {
-                        return response()->json(['reponse' => $th->getMessage()]);
-                    }
-                    $inscription->reste = $inscription->reste - 1;
-                    $inscription->save();
-                    if($inscription->abonnement!=1){
-
-                        $liste = new Entre();
-                        $liste->matricule = $rfid;
-                        $liste->save(); 
-                        Storage::put('logs2.txt', $rfid);
-                        // Storage::put('logs.txt', $rfid);                           
-                    }
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    $output = curl_exec($ch);
-                    curl_close($ch);     
-                }else{
-
-                        $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
-                        if ($inscription->abonnement==1){
-                                $ch = curl_init();
-                                curl_setopt($ch, CURLOPT_URL, "http://192.168.0.179/open");
-                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                                $output = curl_exec($ch);
-                                curl_close($ch);     
-                                $presence = new Presence();
-                                $presence->inscription = $inscription->id;
-                                $presence->membre = $membre->id;
-                                // $presence->activity = $setting->value;
-                                //Membre::getActivity();
-                                try {
-                                        $presence->save();
-                                    } catch (\Throwable $th) {
-                                        return response()->json(['reponse' => $th->getMessage()]);
-                                }
-
-                        }else{
-                            Storage::put('logs2.txt', $rfid);
-                        }
-                        return 0;
-                }
-
-
-            }else{  
-                //dkhal deja mais admin
-                $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
-                
-                if ($inscription->abonnement==1){
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.179/open");
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                        $output = curl_exec($ch);
-                        curl_close($ch);     
-                        $presence = new Presence();
-                        $presence->inscription = $inscription->id;
-                        $presence->membre = $membre->id;
-                        // $presence->activity = $setting->value;
-                        //Membre::getActivity();
-                        try {
-                                $presence->save();
-                            } catch (\Throwable $th) {
-                                return response()->json(['reponse' => $th->getMessage()]);
-                        }
-
-                }else{                     
-                    // dd('sasaz');
-                    // dd($rfid."d");
-                    Storage::put('logs2.txt', $rfid."d");
-                    // Storage::put('logs.txt', $rfid);                           
-
-                }
-            }
-        }
-
-    }
 
 
     public function script3Close($rfid)
@@ -497,8 +175,8 @@ class ApiController extends Controller
         $membre=Membre::where('matricule',$rfid)->first();
         if($membre){
             $inscription  = Inscription::where('membre',$membre->id)->first();
-            $entre = Entre::where('matricule',$rfid)->first();
-            $sortie = Sortie::where('matricule',$rfid)->first();
+            $entre = Entre2::where('matricule',$rfid)->first();
+            $sortie = Sortie2::where('matricule',$rfid)->first();
             // dd($entre);
             
             if(!is_null($entre) and is_null($sortie)){
@@ -507,7 +185,7 @@ class ApiController extends Controller
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $output = curl_exec($ch);
                 curl_close($ch);     
-                $liste = new Sortie();
+                $liste = new Sortie2();
                 $liste->matricule = $rfid;
                 $liste->save(); 
 
@@ -546,28 +224,39 @@ class ApiController extends Controller
 
     }
 
-    public function script($carte,$rfid)
-    {
-        // $matricule= $request->matricule;
-        // $matricule = substr($matricule, 0, -2);
-        if($rfid==70000){
-
-            $ouverture = new Ouverture();
-            try {
-                $ouverture->save();
-            } catch (\Throwable $th) {
-                return response()->json(['reponse' => $th->getMessage()]);
-            }
-            return response()->json(['reponse' => 1]);    
-
-        }
-
-        
-    }
+    
 
     public function ouverture()
     {
         $ouverture = new Ouverture();
+        try {
+            $ouverture->save();
+        } catch (\Throwable $th) {
+            return response()->json(['reponse' => $th->getMessage()]);
+        }
+        return response()->json(['reponse' => 1]);    
+
+
+    } 
+
+
+
+    public function ouverture2()
+    {
+        $ouverture = new Ouverture2();
+        try {
+            $ouverture->save();
+        } catch (\Throwable $th) {
+            return response()->json(['reponse' => $th->getMessage()]);
+        }
+        return response()->json(['reponse' => 1]);    
+
+
+    } 
+
+    public function ouverture3()
+    {
+        $ouverture = new Ouverture3();
         try {
             $ouverture->save();
         } catch (\Throwable $th) {
@@ -630,6 +319,338 @@ class ApiController extends Controller
             return response()->json(['error' => 0]);
         }
         return response()->json(['error' => 1]);
+
+    }
+
+    public function script1($rfid)
+    {
+        if($rfid==70000){
+            $ouverture = new Ouverture();
+            try {
+                $ouverture->save();
+            } catch (\Throwable $th) {
+                return response()->json(['reponse' => $th->getMessage()]);
+            }
+            return response()->json(['reponse' => 1]);    
+        }
+
+        $membre=Membre::where('matricule',$rfid)->first();
+        if($membre){
+            $inscription  = Inscription::where('membre',$membre->id)->first();
+            $entre = Entre::where('matricule',$rfid)->first();
+            // dd($entre);
+            
+            if(is_null($entre)){
+
+                $reponse = $membre->isAuthorised();
+                
+                if($reponse==1 ){
+                    $inscription  = Inscription::where(['membre'=>$membre->id,'etat'=>1])->first();
+                    $tripode = $inscription->tripode;
+                    if($tripode==1 or $tripode==3){
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.177/open");
+                        $presence = new Presence();
+                        $presence->inscription = $inscription->id;
+                        $presence->membre = $membre->id;
+                        // $presence->activity = $setting->value;
+                        //Membre::getActivity();
+                        try {
+                            $presence->save();
+                        } catch (\Throwable $th) {
+                            return response()->json(['reponse' => $th->getMessage()]);
+                        }
+                        $inscription->reste = $inscription->reste - 1;
+                        $inscription->save();
+                        if($inscription->abonnement!=1){
+
+                            $liste = new Entre();
+                            $liste->matricule = $rfid;
+                            $liste->save(); 
+                            Storage::put('logs2.txt', $rfid);
+                            // Storage::put('logs.txt', $rfid);                           
+                        }
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $output = curl_exec($ch);
+                        curl_close($ch);     
+
+                    }else{
+                        Storage::put('logs2.txt', $rfid);
+                    }
+                }else{
+
+                        $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
+                        if ($inscription->abonnement==1){
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, "http://192.168.0.177/open");
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                $output = curl_exec($ch);
+                                curl_close($ch);     
+                                $presence = new Presence();
+                                $presence->inscription = $inscription->id;
+                                $presence->membre = $membre->id;
+                                // $presence->activity = $setting->value;
+                                //Membre::getActivity();
+                                try {
+                                        $presence->save();
+                                    } catch (\Throwable $th) {
+                                        return response()->json(['reponse' => $th->getMessage()]);
+                                }
+
+                        }else{
+                            Storage::put('logs2.txt', $rfid);
+                        }
+                        return 0;
+                }
+
+
+            }else{  
+                $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();                
+                if ($inscription->abonnement==1){
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.177/open");
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $output = curl_exec($ch);
+                        curl_close($ch);     
+                        $presence = new Presence();
+                        $presence->inscription = $inscription->id;
+                        $presence->membre = $membre->id;
+                        try {
+                                $presence->save();
+                            } catch (\Throwable $th) {
+                                return response()->json(['reponse' => $th->getMessage()]);
+                        }
+
+                }else{                     
+                    // dd('sasaz');
+                    // dd($rfid."d");
+                    Storage::put('logs2.txt', $rfid."d");
+                    // Storage::put('logs.txt', $rfid);                           
+
+                }
+            }
+        }
+
+    }
+
+
+
+    public function script2($rfid)
+    {
+        if($rfid==70000){
+            $ouverture = new Ouverture2();
+            try {
+                $ouverture->save();
+            } catch (\Throwable $th) {
+                return response()->json(['reponse' => $th->getMessage()]);
+            }
+            return response()->json(['reponse' => 1]);    
+        }
+        $membre=Membre::where('matricule',$rfid)->first();
+        if($membre){
+            $inscription  = Inscription::where('membre',$membre->id)->first();
+            $entre = Entre::where('matricule',$rfid)->first();
+            if(is_null($entre)){
+                $reponse = $membre->isAuthorised();
+                
+                if($reponse==1){
+                    // dd("sssssssss");
+                    $inscription  = Inscription::where(['membre'=>$membre->id,'etat'=>1])->first();
+                    $tripode = $inscription->tripode;
+                    // dd($tripode);
+                    if($tripode == 1 or $tripode==3){
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.178/open");
+                        $presence = new Presence();
+                        $presence->inscription = $inscription->id;
+                        $presence->membre = $membre->id;
+                        // $presence->activity = $setting->value;
+                        //Membre::getActivity();
+                        try {
+                            $presence->save();
+                        } catch (\Throwable $th) {
+                            return response()->json(['reponse' => $th->getMessage()]);
+                        }
+                        $inscription->reste = $inscription->reste - 1;
+                        $inscription->save();
+                        if($inscription->abonnement!=1){
+
+                            $liste = new Entre();
+                            $liste->matricule = $rfid;
+                            $liste->save(); 
+                            Storage::put('logs2.txt', $rfid);
+                            // Storage::put('logs.txt', $rfid);                           
+                        }
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $output = curl_exec($ch);
+                        curl_close($ch);     
+                    }else{
+                        Storage::put('logs2.txt', $rfid);
+                    }
+                }else{
+                        $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
+                        if ($inscription->abonnement==1){
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, "http://192.168.0.178/open");
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                $output = curl_exec($ch);
+                                curl_close($ch);     
+                                $presence = new Presence();
+                                $presence->inscription = $inscription->id;
+                                $presence->membre = $membre->id;
+                                try {
+                                        $presence->save();
+                                    } catch (\Throwable $th) {
+                                        return response()->json(['reponse' => $th->getMessage()]);
+                                }
+
+                        }else{
+                            Storage::put('logs2.txt', $rfid);
+                        }
+                        return 0;
+                }
+
+
+            }else{  
+                //dkhal deja mais admin
+                $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
+
+                if ($inscription->abonnement==1){
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.178/open");
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $output = curl_exec($ch);
+                        curl_close($ch);     
+                        $presence = new Presence();
+                        $presence->inscription = $inscription->id;
+                        $presence->membre = $membre->id;
+                        // $presence->activity = $setting->value;
+                        //Membre::getActivity();
+                        try {
+                                $presence->save();
+                            } catch (\Throwable $th) {
+                                return response()->json(['reponse' => $th->getMessage()]);
+                        }
+
+                }else{                     
+                    // dd('sasaz');
+                    // dd($rfid."d");
+                    Storage::put('logs2.txt', $rfid."d");
+                    // Storage::put('logs.txt', $rfid);                           
+
+                }
+            }
+        }
+
+    }
+
+
+
+    public function script3($rfid)
+    {
+        if($rfid==70000){
+            $ouverture = new Ouverture2();
+            try {
+                $ouverture->save();
+            } catch (\Throwable $th) {
+                return response()->json(['reponse' => $th->getMessage()]);
+            }
+            return response()->json(['reponse' => 1]);    
+        }
+        $membre=Membre::where('matricule',$rfid)->first();
+        if($membre){
+            $inscription  = Inscription::where('membre',$membre->id)->first();
+            $entre = Entre2::where('matricule',$rfid)->first();
+            if(is_null($entre)){
+                $reponse = $membre->isAuthorised();
+                
+                if($reponse==1){
+                    // dd("sssssssss");
+                    $inscription  = Inscription::where(['membre'=>$membre->id,'etat'=>1])->first();
+                    $tripode = $inscription->tripode;
+                    // dd($tripode);
+                    if($tripode == 2 or $tripode==3){
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.179/open");
+                        $presence = new Presence();
+                        $presence->inscription = $inscription->id;
+                        $presence->membre = $membre->id;
+                        // $presence->activity = $setting->value;
+                        //Membre::getActivity();
+                        try {
+                            $presence->save();
+                        } catch (\Throwable $th) {
+                            return response()->json(['reponse' => $th->getMessage()]);
+                        }
+                        $inscription->reste = $inscription->reste - 1;
+                        $inscription->save();
+                        if($inscription->abonnement!=1){
+
+                            $liste = new Entre2();
+                            $liste->matricule = $rfid;
+                            $liste->save(); 
+                            Storage::put('logs2.txt', $rfid);
+                        }
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $output = curl_exec($ch);
+                        curl_close($ch);     
+                    }else{
+                        Storage::put('logs2.txt', $rfid);
+                    }
+                }else{
+                        $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
+                        if ($inscription->abonnement==1){
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, "http://192.168.0.179/open");
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                $output = curl_exec($ch);
+                                curl_close($ch);     
+                                $presence = new Presence();
+                                $presence->inscription = $inscription->id;
+                                $presence->membre = $membre->id;
+                                try {
+                                        $presence->save();
+                                    } catch (\Throwable $th) {
+                                        return response()->json(['reponse' => $th->getMessage()]);
+                                }
+
+                        }else{
+                            Storage::put('logs2.txt', $rfid);
+                        }
+                        return 0;
+                }
+
+
+            }else{  
+                //dkhal deja mais admin
+                $inscription  = Inscription::where('membre','=' ,$membre->id)->orderBy('id','dsc')->first();
+
+                if ($inscription->abonnement==1){
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.179/open");
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $output = curl_exec($ch);
+                        curl_close($ch);     
+                        $presence = new Presence();
+                        $presence->inscription = $inscription->id;
+                        $presence->membre = $membre->id;
+                        // $presence->activity = $setting->value;
+                        //Membre::getActivity();
+                        try {
+                                $presence->save();
+                            } catch (\Throwable $th) {
+                                return response()->json(['reponse' => $th->getMessage()]);
+                        }
+
+                }else{                     
+                    // dd('sasaz');
+                    // dd($rfid."d");
+                    Storage::put('logs2.txt', $rfid."d");
+                    // Storage::put('logs.txt', $rfid);                           
+
+                }
+            }
+        }
 
     }
 }
