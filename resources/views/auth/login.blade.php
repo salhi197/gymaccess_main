@@ -29,7 +29,7 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Saisir les données Pour Authentifier</p>
-                <form action="/login" method="post">
+                <form action="/gym/login" method="post">
                     @csrf
                     <div class="input-group mb-3">
                         <input type="text" name="email" class="form-control" placeholder="Login">

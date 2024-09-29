@@ -74,8 +74,8 @@ Ares Style
  ==========================================*/
 html,
 body {
-    background: url('/img/gymbg.jpeg') no-repeat top center;
-    background-image: linear-gradient(to bottom, hsla(0, 0.00%, 0.00%, 0.6), hsla(0, 0.00%, 0.00%, 0.6)),  url('/img/gymbg.jpeg');
+    background: url('/gym/img/gymbg.jpeg') no-repeat top center;
+    background-image: linear-gradient(to bottom, hsla(0, 0.00%, 0.00%, 0.6), hsla(0, 0.00%, 0.00%, 0.6)),  url('/gym/img/gymbg.jpeg');
     background-size: cover;
     position: relative;
     font-size: 15px;
