@@ -18,6 +18,9 @@ Route::get('/api/script1/{rfid}', 'ApiController@script1');
 Route::get('/api/close/script1/{rfid}', 'ApiController@script1Close');
 
 
+Route::get('/payment', [PaymentController::class, 'showPaymentForm']);
+Route::post('/payment', [PaymentController::class, 'processPayment']);
+
 
 
 Route::get('/export', 'SettingController@export')->name('export');
