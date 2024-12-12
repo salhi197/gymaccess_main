@@ -4,7 +4,6 @@
       <div class="container">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-white"> Liste des Membre Actifs , Total {{count($membres)}}  </h1>
           </div><!-- /.col -->
           
         </div><!-- /.row -->
@@ -20,34 +19,77 @@
 @section('content')
                     <div class="card">
                             <div class="card-body table1">
-                                    <div class="row">
 
+                                <div class="row">
+                                    <!-- Entrer Count Card -->
+                                    <div class="col-md-6 col-12">
+                                        <div class="small-box bg-info">
+                                            <div class="inner">
+                                                <h3>Nombre total</h3>
+                                                <h3 id="totalEntrer">{{ count($membres) ?? 0 }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-log-in"></i>
+                                            </div>
+                                        </div>
                                     </div>
+                                    
+                                    <!-- Sortie Count Card -->
+                                    <div class="col-md-6 col-12">
+                                        <div class="small-box bg-warning">
+                                            <div class="inner">
+                                                <h3>Total Crédit</h3>
+                                                <h3 id="totalSortie">{{$total ?? ''}} DA</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-log-out"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4">
+                                        <a href="{{route('exportCredits')}}" class="btn btn-success btn-lg"><i class="fa fa-download"></i> Excel</a>
+                                    </div><!-- /.col -->
+                                </div>
+
                                 
                                 <div class="table-responsive">
                                     <table id="example1"  class="table table-striped table-bordered no-wrap">
                                         <thead>
                                             <tr>
-                                                <th>{{trans('main.id')}}</th>
-                                                <th>{{trans('main.Matricule')}}</th>
-                                                <th>{{trans('main.nom')}}</th>
-                                                <th>{{trans('main.Prénom')}}</th>
-                                                <th>{{trans('main.Téléphone')}}</th>                                                
-                                                <th>{{trans('main.Action')}}</th>                                                
+                                                <th style="font-size:27px;">{{trans('main.id')}}</th>
+                                                <th style="font-size:27px;">{{trans('main.Matricule')}}</th>
+                                                <th style="font-size:27px;">{{trans('main.nom')}}</th>
+                                                <th style="font-size:27px;">{{trans('main.Prénom')}}</th>
+                                                <th style="font-size:27px;">{{trans('main.Téléphone')}}</th>                                                
+                                                <th style="font-size:27px;">Crédit</th>                                                
+                                                <th style="font-size:27px;">{{trans('main.Action')}}</th>                                                
                                             </tr>
 
                                         </thead>
                                         <tbody class="">
+
+                                            <?php 
+                                                $total = 0;
+
+                                            ?>
+                                            
                                             @foreach($membres as $membre)
+                                            <?php 
+                                                $total = $total+$membre->credit();                                                
+                                            ?>
+
                                                 <tr >
                                                     <td>{{$membre->id ?? ''}}</td>
                                                     <td>{{$membre->matricule ?? ''}}</td>
                                                     <td>{{$membre->nom ?? ''}}</td>
                                                     <td>{{$membre->prenom ?? ''}}</td>
-                                                    <td>{{$membre->telephone ?? ''}}</td>
+                                                    <td>{{$membre->telephone ?? '#'}}</td>
+                                                    <td>{{$membre->credit() ?? ''}} DA </td>
                                                     <td>
-                                                        <a href="/membre/membre/{{$membre->matricule ?? ''}}" class="btn bubbly-button text-white">{{trans("main.Profile")}} </a>
-                                                        <a href="/membre/edit/{{$membre->matricule ?? ''}}" class="btn bubbly-button text-white">{{trans("main.Modifier")}} <i class="fa fa-edit"></i></a>
+                                                        <a href="/gym/membre/membre/{{$membre->matricule ?? ''}}" class="btn bubbly-button text-white">{{trans("main.Profile")}} </a>
+                                                        <a href="/gym/membre/edit/{{$membre->matricule ?? ''}}" class="btn btn-primary text-white">Principal <i class="fa fa-edit"></i></a>
                                                     </td>
                                                     
                                                 </tr>
@@ -77,11 +119,21 @@
 <script>
 $(document).ready(function() {
 
-        $("#example1").DataTable({
+
+    $("#example1").DataTable({
             "responsive": true, "lengthChange": false, "autoWidth": false,
             "order": [[ 0, "desc" ]],
+            language: {
+                search: "Recherche "
+            }
+
           }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
           $('#example2').DataTable({
+            language: {
+                search: "Recherche :"
+
+            },
+
             "paging": true,
             "lengthChange": false,
             "searching": false,
