@@ -28,6 +28,22 @@ use Illuminate\Routing\Route;
 
 class MembreController extends Controller
 {
+
+    public function credits()
+    {
+        $membres = Membre::whereHas('inscriptions', function ($query) {
+            $query->whereColumn('versement', '<', 'total');
+        })
+        ->select('id', 'nom', 'prenom', 'telephone','matricule')
+        ->get();
+
+        $total = $membres->sum(function ($membre) {
+            return $membre->credit();
+        });
+        
+        return view('membres.credits', compact('membres','total'));
+    }
+
     public function indexAjax()
     {
         return view('membres.index-ajax');
