@@ -1,0 +1,121 @@
+<div class="form-group">
+                                                        <label>Activités</label>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                
+                                                                
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('circuit-tarining') == 1)
+                                                                        checked
+                                                                    @endif
+                                                                    value="circuit-tarining" >
+                                                                    <label class="form-check-label" >
+                                                                    circuit-tarining
+                                                                    </label>
+                                                                </div>
+
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('rf-cardio') == 1)
+                                                                        checked
+                                                                    @endif
+                                                                    value="Rf-cardio" >
+                                                                    <label class="form-check-label" >
+                                                                    Rf-cardio
+                                                                    </label>
+                                                                </div>
+
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('zumba') == 1)
+                                                                        checked
+                                                                    @endif
+                                                                    value="zumba" >
+                                                                    <label class="form-check-label" >
+                                                                    zumba
+                                                                    </label>
+                                                                </div>       
+
+
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('gym-enfants') == 1)
+                                                                        checked
+                                                                    @endif
+                                                                    value="gym-enfants" >
+                                                                    <label class="form-check-label" >
+                                                                    Gym Enfants
+                                                                    </label>
+                                                                </div>                                                               
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('zomba-kids') == 1)
+                                                                        checked
+                                                                    @endif
+                                                                    value="zomba-kids" >
+                                                                    <label class="form-check-label" >
+                                                                    Zomba Kids {{$membre->HasActivity('zomba-kids')}}
+                                                                    </label>
+                                                                </div>     
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('crossfit') == 1)
+                                                                        checked 
+                                                                    @endif
+                                                                    value="crossfit" >
+                                                                    <label class="form-check-label" >
+                                                                    crossfit
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('zumba-strong') == 1)
+                                                                        checked 
+                                                                    @endif
+                                                                    value="zumba-strong" >
+                                                                    <label class="form-check-label" >
+                                                                    zumba-strong
+                                                                    </label>
+                                                                </div>
+
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('ventre-plat') == 1)
+                                                                        checked 
+                                                                    @endif
+                                                                    value="ventre-plat" >
+                                                                    <label class="form-check-label" >
+                                                                    ventre plat
+                                                                    </label>
+                                                                </div>
+
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('vovinam') == 1)
+                                                                        checked 
+                                                                    @endif
+                                                                    value="vovinam" >
+                                                                    <label class="form-check-label" >
+                                                                    vovinam
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="activities[]" 
+                                                                    @if($membre->HasActivity('yoga') == 1)
+                                                                        checked 
+                                                                    @endif
+                                                                    value="yoga" >
+                                                                    <label class="form-check-label" >
+                                                                    yoga
+                                                                    </label>
+                                                                </div>
+
+                                                                                                                         
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
