@@ -1,4 +1,12 @@
 @extends('layouts.master')
+@section('styles')
+<style>
+    canvas{
+        background-color: white;
+    }
+</style>
+@endsection
+
 @section('content')
 
         <div class="container-fluid">

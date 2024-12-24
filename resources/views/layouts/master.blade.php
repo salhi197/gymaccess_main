@@ -304,6 +304,53 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @yield('modals')
 
 
+
+<script>
+
+
+
+    const output = document.getElementById('command-output');
+
+    // Initialize the Speech Recognition API
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'fr-FR'; // Set to French for French commands
+    recognition.interimResults = false; // Show only final results
+
+    // This event is fired when the recognition system has a result
+    recognition.onresult = function (event) {
+        const command = event.results[0][0].transcript.toLowerCase();
+        output.textContent = `You said: ${command}`;
+
+        // Send the command to the Laravel backend
+        fetch('/voice-command', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ command })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Redirect to the provided URL
+            window.location.href = data.redirect_url;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            output.textContent = "Sorry, there was an error processing your command.";
+        });
+    };
+
+    // This event is fired when the recognition system encounters an error
+    recognition.onerror = function (event) {
+        console.error('Speech recognition error:', event);
+        output.textContent = "Sorry, I couldn't understand that. Please try again.";
+    };
+
+    // Automatically start listening when the page loads
+    recognition.start();
+</script>
+
 <script>
 $(window).on("load",function(){
   var envurl = {!! json_encode(Setting::getSetting('lien')) !!}         
@@ -374,10 +421,6 @@ $(window).on("load",function(){
 
     }
   })
-
-
-// on load abda diiiir kolch
-
 
         $('#btnopen3').on('click',function(){
           fetch('http://192.168.0.179/open',{
@@ -506,18 +549,10 @@ $(window).on("load",function(){
 
           })
         })
-
-var profile = 0;
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
         var host = window.location.host;
         var host = {!! json_encode(url('/')) !!}         
         var u = window.location.href   
-
-        
-
-        
-
-
 
         @if(session('success'))
             $(function(){
@@ -536,11 +571,6 @@ var profile = 0;
                 toastr.error('{{Session::get("error")}}')
             })
         @endif
-
-
-        
-
-
 
 });
 
