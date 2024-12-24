@@ -306,50 +306,90 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
 <script>
+        const output = document.getElementById('command-output');
 
+        // Initialize the Speech Recognition API
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'fr-FR'; // Set the language to French
+        recognition.interimResults = false; // Show only final results (not interim)
 
+        // This event is fired when the recognition system gets a result
+        recognition.onresult = function (event) {
+            const command = event.results[0][0].transcript.toLowerCase(); // Get the voice command
+            output.textContent = `You said: ${command}`; // Display the command
 
-    const output = document.getElementById('command-output');
+            // Handle the command
+            handleVoiceCommand(command);
+        };
 
-    // Initialize the Speech Recognition API
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'fr-FR'; // Set to French for French commands
-    recognition.interimResults = false; // Show only final results
+        // This event is fired when the recognition system encounters an error
+        recognition.onerror = function (event) {
+            console.error('Speech recognition error:', event);
+            output.textContent = "Sorry, I couldn't understand that. Please try again.";
+        };
 
-    // This event is fired when the recognition system has a result
-    recognition.onresult = function (event) {
-        const command = event.results[0][0].transcript.toLowerCase();
-        output.textContent = `You said: ${command}`;
+        // Automatically start listening when the page loads
+        recognition.start();
 
-        // Send the command to the Laravel backend
-        fetch('/voice-command', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ command })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Redirect to the provided URL
-            window.location.href = data.redirect_url;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            output.textContent = "Sorry, there was an error processing your command.";
-        });
-    };
+        // Function to handle voice commands
+        function handleVoiceCommand(command) {
+            switch (command) {
+                case 'open':
+                    fetch('/open', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        output.textContent = 'Open command processed.';
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        output.textContent = "Sorry, there was an error with the open command.";
+                        console.error(error);
+                    });
+                    break;
 
-    // This event is fired when the recognition system encounters an error
-    recognition.onerror = function (event) {
-        console.error('Speech recognition error:', event);
-        output.textContent = "Sorry, I couldn't understand that. Please try again.";
-    };
+                case 'close':
+                    fetch('/close', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        output.textContent = 'Close command processed.';
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        output.textContent = "Sorry, there was an error with the close command.";
+                        console.error(error);
+                    });
+                    break;
 
-    // Automatically start listening when the page loads
-    recognition.start();
-</script>
+                case 'liste membres':
+                    window.location.href = '/membre';
+                    break;
+
+                case 'ajouter membre':
+                    window.location.href = '/membre/create';
+                    break;
+
+                case 'vider la liste':
+                    window.location.href = '/clear';
+                    break;
+
+                default:
+                    output.textContent = "Command not recognized. Please try again.";
+                    break;
+            }
+        }
+    </script>
 
 <script>
 $(window).on("load",function(){
