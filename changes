@@ -49,9 +49,10 @@
                                     <div class="form-group">
                                         <label class="small mb-1" for="inputFirstName">{{trans('main.Genre')}}: </label>
                                         <select class="customselect" name="genre" id="genre">
-                                            <option value="1">Seance libre </option>
-                                            <option value="2">Seance libre + cardio</option>
-                                            <option value="3">cardio</option>
+                                            <option value="">Séléctionner </option>
+                                            <option value="Seance libre">Seance libre </option>
+                                            <option value="Seance libre + cardio">Seance libre + cardio</option>
+                                            <option value="cardio">cardio</option>
 
                                         </select>
                                     </div> 
@@ -59,7 +60,7 @@
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="inputFirstName">{{trans('main.Tarif')}}: </label>
-                                        <input type="text" name="prix" id="prix" value="150"  class="form-control"/>
+                                        <input type="text" name="prix" id="prix" value=""  class="form-control"/>
                                     </div> 
 
 
@@ -278,13 +279,13 @@ $(document).ready(function() {
 
         $('#genre').on('change',function () {
             var genre = this.value 
-            if(genre=="1"){
+            if(genre=="Seance libre"){
                 $('#prix').val(200)
             }
-            if(genre=="2"){
+            if(genre=="Seance libre + cardio"){
                 $('#prix').val(300)
             }
-            if(genre=="3"){
+            if(genre=="cardio"){
                 $('#prix').val(100)
             }
 
