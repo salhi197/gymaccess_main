@@ -1,21 +1,5 @@
-if (!empty($request['prix']) && $request['prix'] != 0) {
-    $assurance = new Assurance();
-    $assurance->prix = $request['prix'];        
-    $assurance->telephone = $request['telephone'];        
-    $assurance->nom_prenom = $request['nom_prenom3'];        
-    $assurance->membre = $request['membre4'];        
-    $assurance->user = Auth::user()->id;
-    $assurance->save();
-}
-
-if (!empty($request['prix_puce']) && $request['prix_puce'] != 0) {
-    $puce = new Puce();
-    $puce->prix = $request['prix_puce'];        
-    $puce->telephone = $request['telephone'];        
-    $puce->nom_prenom = $request['nom_prenom3'];        
-    //$puce->membre = $request['membre4'];        
-    $puce->user = Auth::user()->id;
-    $puce->save();
-}
-
-return Redirect::back();
+@if ($produit->photo)
+    <img src="{{ asset($produit->photo) }}" alt="" class="img-thumbnail">
+@else
+    <img src="{{ asset('noproduct.jpeg') }}" alt="" class="img-thumbnail">
+@endif
