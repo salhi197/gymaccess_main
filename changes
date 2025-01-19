@@ -1,5 +1,41 @@
-@if ($produit->photo)
-    <img src="{{ asset($produit->photo) }}" alt="" class="img-thumbnail">
-@else
-    <img src="{{ asset('noproduct.jpeg') }}" alt="" class="img-thumbnail">
-@endif
+Dim shell, fso, execObject, output, ipAddress, regex, projectPath, cmd
+Set shell = CreateObject("WScript.Shell")
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+' Path to your Laravel project
+projectPath = "C:\Users\AURES\Desktop\GymSNOO\dernierversion"
+
+' Define the expected IP address
+ipAddress = "192.168.0.4"
+
+' Check if the Laravel project folder exists
+If Not fso.FolderExists(projectPath) Then
+    MsgBox "Error: The project folder '" & projectPath & "' does not exist.", vbCritical, "Folder Not Found"
+    WScript.Quit
+End If
+
+' Run the ipconfig command and capture the output
+Set execObject = shell.Exec("cmd.exe /c ipconfig")
+output = execObject.StdOut.ReadAll
+
+' Use a regular expression to search for the IP address
+Set regex = New RegExp
+regex.Pattern = "IPv4 Address[^\d]+(" & ipAddress & ")"
+regex.IgnoreCase = True
+
+' Check if the IP address matches
+If regex.Test(output) Then
+    ' Command to start the Laravel server with the specified host
+    cmd = "cmd.exe /c cd " & projectPath & " && php artisan serve --host=" & ipAddress & " --port=8000"
+    
+    ' Run the Laravel server command
+    shell.Run cmd, 0, False ' 0 hides the console window, False makes it non-blocking
+    MsgBox "Laravel server started successfully at http://" & ipAddress & ":8000", vbInformation, "Success"
+Else
+    ' Command to start the Laravel server without specifying the host
+    cmd = "cmd.exe /c cd " & projectPath & " && php artisan serve --port=8000"
+    
+    ' Run the Laravel server command
+    shell.Run cmd, 0, False
+    MsgBox "Laravel server started without specifying a host. Check http://127.0.0.1:8000", vbExclamation, "Running on Default Host"
+End If
