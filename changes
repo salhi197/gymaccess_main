@@ -1,41 +1,140 @@
-Dim shell, fso, execObject, output, ipAddress, regex, projectPath, cmd
-Set shell = CreateObject("WScript.Shell")
-Set fso = CreateObject("Scripting.FileSystemObject")
+$length = $request->input('length');
+        $query = Inscription::query();
+        
+        if ($length == -1) {
+            // Return all records for export
+            $inscriptions = $query->get();
+            foreach($inscriptions as $record){
+                $etat = "<span class='badge badge-info'>Active</span>";
+            if ($record->etat==0) {
+                $etat = "<span class='badge badge-info'>Non Active</span>";                
+            }
+            $membre = Membre::find($record->membre);
+            if(is_null($membre)){
+                $membre = "";
+            }else{
+                $membre = $membre['nom'].' '.$membre['prenom'];
+            }
 
-' Path to your Laravel project
-projectPath = "C:\Users\AURES\Desktop\GymSNOO\dernierversion"
+            $abonnement = Abonnement::find($record->abonnement);
+            if(is_null($abonnement)){
+                $abonnement = "";
+            }else{
+                $abonnement = $abonnement['label'];//.' '.$membre['prenom'];
+            }
 
-' Define the expected IP address
-ipAddress = "192.168.0.4"
+            $user = User::find($record->user);
+            if(is_null($user)){
+                $user = "";
+            }else{
+                $user = $user['name'];//.' '.$membre['prenom'];
+            }
 
-' Check if the Laravel project folder exists
-If Not fso.FolderExists(projectPath) Then
-    MsgBox "Error: The project folder '" & projectPath & "' does not exist.", vbCritical, "Folder Not Found"
-    WScript.Quit
-End If
 
-' Run the ipconfig command and capture the output
-Set execObject = shell.Exec("cmd.exe /c ipconfig")
-output = execObject.StdOut.ReadAll
+              $data_arr[] = array(
 
-' Use a regular expression to search for the IP address
-Set regex = New RegExp
-regex.Pattern = "IPv4 Address[^\d]+(" & ipAddress & ")"
-regex.IgnoreCase = True
+                "id"=>$record->id,
+                "nom_prenom"=>$membre,
+                "abonnement"=>$abonnement,
+                "etat"=>$record->etat,
+                
+                "debut"=>$record->debut,
+                "nbrmois"=>$record->nbrmois,
 
-' Check if the IP address matches
-If regex.Test(output) Then
-    ' Command to start the Laravel server with the specified host
-    cmd = "cmd.exe /c cd " & projectPath & " && php artisan serve --host=" & ipAddress & " --port=8000"
+                "nbsseance"=>$record->reste.'/'.$record->nbsseance,
+                "total"=>$record->total." DA",
+                "remise"=>$record->remise." DA",
+                "versement"=>$record->versement." DA",
+                "credit"=>$record->total-$record->versement." DA",
+                "user"=>$user,
+           );
+        }
+   
+
+            return response()->json([
+                'data' => $data_arr
+            ]);
+        }
+
+
+
+
+
+
+
+
+
+
+function exportToExcel() {
+    // Get DataTable instance
+    var table = $('#InscriptionsTable').DataTable();
     
-    ' Run the Laravel server command
-    shell.Run cmd, 0, False ' 0 hides the console window, False makes it non-blocking
-    MsgBox "Laravel server started successfully at http://" & ipAddress & ":8000", vbInformation, "Success"
-Else
-    ' Command to start the Laravel server without specifying the host
-    cmd = "cmd.exe /c cd " & projectPath & " && php artisan serve --port=8000"
-    
-    ' Run the Laravel server command
-    shell.Run cmd, 0, False
-    MsgBox "Laravel server started without specifying a host. Check http://127.0.0.1:8000", vbExclamation, "Running on Default Host"
-End If
+    // Load all data through AJAX
+    $.ajax({
+        url: table.ajax.url(),
+        type: 'GET',
+        data: {
+            length: -1 // Request all records
+        },
+        success: function(response) {
+            // Create array for data
+            var data = [];
+            
+            // Add headers
+            var headers = [
+                'ID', 
+                'Debut', 
+                'Fin', 
+                'Reste',
+                'Nombre séances',
+                'Abonnement',
+                'Membre',
+                'Etat',
+                'Total',
+                'Remise',
+                'Nombre mois',
+                'Versement',
+                'User'
+            ];
+            data.push(headers);
+            
+            // Add all rows from response
+            response.data.forEach(function(row) {
+                var rowData = [
+                    row.id,
+                    row.debut,
+                    row.fin,
+                    row.reste,
+                    row.nbsseance,
+                    row.abonnement,
+                    row.membre,
+                    row.etat,
+                    row.total,
+                    row.remise,
+                    row.nbrmois,
+                    row.versement,
+                    row.user
+                ];
+                data.push(rowData);
+            });
+
+            // Create worksheet
+            var ws = XLSX.utils.aoa_to_sheet(data);
+            
+            // Set column widths
+            var wscols = headers.map(() => ({wch: 15}));
+            ws['!cols'] = wscols;
+            
+            // Create workbook
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inscriptions");
+            
+            // Generate Excel file
+            XLSX.writeFile(wb, "Inscriptions_" + new Date().toISOString().split('T')[0] + ".xlsx");
+        },
+        error: function(xhr, status, error) {
+            console.error('Export failed:', error);
+            alert('Export failed. Please try again.');
+        }
+    });
+}
