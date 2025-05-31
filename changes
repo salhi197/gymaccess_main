@@ -1,3 +1,4 @@
-{{ $presence->getMembre() 
-        ? $presence->getMembre()['nom'] . ' ' . $presence->getMembre()['prenom'] 
-        : '' }}
+@php
+    $membre = $presence->getMembre();
+@endphp
+<td>{{ $membre ? $membre['nom'].' '.$membre['prenom'] : '' }}</td>
