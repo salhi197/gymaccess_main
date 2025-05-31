@@ -1,85 +1,19 @@
-public function debloquer($inscriptionId)
-    {
-        $inscription = Inscription::findOrFail($inscriptionId);
+                                            @if(isset($inscription))
+                                                @if($inscription->etat == 1)
+                                                    <div class="col-md-1" >
+                                                        <a href="{{route('inscription.bloquer',['inscritpion'=>$inscription->id])}}"  class="btn btn-success btn-sm" style="padding:15px;"  >
+                                                            <i class="fa fa-ban" style="font-size:60px;" aria-hidden="true"></i>
+                                                        </a>
+                                                        <label class="text-center" style="font-size:20px;">Bloquer</label>
+                                                    </div>
+                                                @endif
+                                                @if($inscription->etat == "bloqued")
+                                                <div class="col-md-1" >
+                                                    <a href="{{route('inscription.debloquer',['inscritpion'=>$inscription->id])}}"  class="btn btn-success btn-sm" style="padding:15px;"  >
+                                                        <i class="fa fa-ban" style="font-size:60px;" aria-hidden="true"></i>
+                                                    </a>
+                                                    <label class="text-center" style="font-size:20px;">débloquer</label>
+                                                </div>
+                                                @endif
 
-        if ($inscription->etat !== 'bloqued') {
-            return response()->json(['message' => 'This inscription is not blocked.'], 400);
-        }
-    
-        try {
-            DB::beginTransaction();
-    
-            // جلب جميع inscriptions المحظورة لنفس membre
-            $inscriptionsToUnblock = Inscription::where('membre', $inscription->membre)
-                ->where('etat', 'bloqued')
-                ->get();
-    
-            foreach ($inscriptionsToUnblock as $ins) {
-                $bloque = $ins->bloques()->whereNull('date_debloque')->latest()->first();
-    
-                if (!$bloque) {
-                    DB::rollBack();
-                    return redirect()->back()->with('error', 'Erreur , vous devez supprimer le membre');
-                }
-    
-                $dateBloque = Carbon::parse($bloque->date_bloque);
-                $dateDebloque = Carbon::now();
-                $duration = Carbon::parse($ins->fin)->diffInDays($dateBloque);
-    
-                // تحديث السجل في جدول bloque
-                $bloque->update([
-                    'date_debloque' => $dateDebloque,
-                    'agent_debloque' => Auth::id(),
-                ]);
-    
-                // تحديث inscription
-                if ($ins->fin) {
-                    $newFinDate = Carbon::parse($dateDebloque)->addDays($duration);
-                    $ins->update([
-                        'etat' => 1,
-                        'fin' => $newFinDate->toDateString(),
-                    ]);
-                } else {
-                    $ins->update(['etat' => 1]); // إذا لم يكن لديه `fin`
-                }
-            }
-    
-            DB::commit();
-            return redirect()->back()->with('success', count($inscriptionsToUnblock) . ' inscriptions débloquées avec succès.');
-    
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
-        }
-    
-
-
-    }
-
-
-
-
-
-
-
-
-    Route::get('/bloquer/{inscription}', ['as' => '.bloquer', 'uses' => 'InscriptionController@bloquer']);
-    Route::get('/debloquer/{inscription}', ['as' => '.debloquer', 'uses' => 'InscriptionController@debloquer']);
-    Route::get('/bloques/{inscription}', ['as' => '.bloques', 'uses' => 'InscriptionController@bloques']);
-
-
-
-
-DROP TABLE IF EXISTS `bloques`;
-CREATE TABLE IF NOT EXISTS `bloques` (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `inscription_id` int UNSIGNED NOT NULL,
-  `date_bloque` date NOT NULL,
-  `date_debloque` date DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `agent_bloque` int DEFAULT NULL,
-  `agent_debloque` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `inscription_id` (`inscription_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+                                                @endif
