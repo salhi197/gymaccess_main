@@ -1,33 +1,34 @@
-<?php
+<?php if(isset($inscription)) {?>
 
-namespace App;
+                                                    <?php if($inscription->etat=="0") {?>
+                                                        <div class="col-md-1 offset-md-3">
+                                                            <div class="row">
+                                                                <span id="loading2" class="btn btn-danger"></span>
+                                                                <h1 class="m-0 text-white text-center">Expiré </h1>
+                                                            </div>
+                                                        </div>                         
+                                                    <?php } ?>
 
-use Illuminate\Database\Eloquent\Model;
-
-class Bloque extends Model
-{
-    protected $fillable = [
-        'inscription_id',
-        'date_bloque',
-        'date_debloque',
-        'agent_bloque',
-        'agent_debloque'
-    ];
+                                                    <?php if($inscription->etat=="bloqued") {?>
+                                                        <div class="col-md-1 offset-md-3">
+                                                            <div class="row">
+                                                                <span id="loading3" class="btn btn-warning"></span>
+                                                                <h1 class="m-0 text-white text-center">Bloqué</h1>
+                                                            </div>
+                                                        </div>                         
 
 
-    public function agent_bloque()
-    {
-        $user = User::find($this->agent_bloque);
-        return $user['name'] ?? '/';
-    }
-    public function agent_debloque()
-    {
-        $user = User::find($this->agent_debloque);
-        return $user['name'] ?? '/';
-    }
-    public function inscription()
-    {
-        return $this->belongsTo(Inscription::class);
-    }
-    
-}
+                                                    <?php } ?>
+
+                                                    <?php if($inscription->etat==1) {?>
+                                                        <div class="col-md-1 offset-md-3">
+                                                            <div class="row">
+                                                                <span id="loading" class="btn btn-success"></span>
+                                                                <h1 class="m-0 text-white text-center" style="font-size:50px;">Active</h1>
+                                                            </div>
+                                                        </div>                         
+
+                                                        
+                                                    <?php } ?>
+
+                                                <?php } ?>
