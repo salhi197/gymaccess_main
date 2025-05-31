@@ -1,102 +1,33 @@
 <?php
 
-return [
+namespace App;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used during authentication for various
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
-    */
+use Illuminate\Database\Eloquent\Model;
 
-    'failed' => 'Les Informations sont incorrecte',
-    'Connecté' => 'Connecté',
-    'Nombre Total' => 'Nombre Total',
-    'membres'=>'Membres',
-    'Filtrer'=>'Filtrer',
-    'Séléctionner un Abonnement'=>'Séléctionner un Abonnement',
+class Bloque extends Model
+{
+    protected $fillable = [
+        'inscription_id',
+        'date_bloque',
+        'date_debloque',
+        'agent_bloque',
+        'agent_debloque'
+    ];
 
-    'Abonnement'=>'Abonnement',
-    'inscriptions'=>'Inscriptions',
-    'rapport'=>'Rapport',
-    'statistique'=>'Statistique',
-    'rapport_inscriptions'=>'Rapport Inscriptions',
-    'rapport_seance_libre'=>'Rapport Séance Libre',
-    'rapport_assurance'=>'Rapport Assurance',
-    'charges'=>'Charges',
-    'paramètres'=>'Paramètres',
-    'presences'=>'Presences',
-    'scanner'=>'Scanner',    
-    'Nouveau'=>'Nouveau',
-    'Séance Libre'=>'Séance Libre',
-    'Assurance'=>'Assurance',
-    'insérer une séance Libre'=>'insérer une séance Libre',
-    'Genre'=>'Genre',
-    'Homme'=>'Homme',
-    'Femme'=>'Femme',
-    'Tarif'=>'Tarif',
-    'Nom Prénom'=>'Nom Prénom',
-    'Téléphone'=>'Téléphone', 
-    'Confirmer'=>'Confirmer',
-    'Close'=>'Close', 
-    'Inscrit aujourdhui'=>'Inscrit Aujourd\'hui',
-    'Séances Libre'=>'Séances Libre',
-    'Accés Aujourdhui'=>'Accés Aujourd\'hui',
-    'Ouvertures Manuelle'=>'Ouvertures Manuelle',
-    'insérer une Assurance'=>'Insérer Une Assurance',
-    'Liste de Tous Les Abonnements'=>'Liste de Tous Les Abonnements',
-    'Ajouter Abonnement'=>'Ajouter Abonnement',
-    'Ajouter'=>'Ajouter',   
-    'Modifier'=>'Modifier',   
-    'Début'=>'Début',
-    'Fin'=>'Fin',
-    'Liste de Inscriptions'=>'Liste de Inscriptions',
-    'Nombre seance reste'=>'Nombre seance reste',
-    'Filter'=>'Filtrer',
-    'Présences'=>'Présences',   
-    'Type'=>'Type',
-    'Montant'=>'Montant',
-    'Inscriptions'=>'Inscriptions',
-    'Séance Libre'=>'Séance Libre',
-    'Total Net'=>'Total Net',
-    'Charges'=>'Charges',
-    'Paramètre de application' => 'Paramètre de application',
-    'Communication Port Com'=>'Communication Port Com',
-    'Titre Général'=>'Titre Général',    
-    'Membre'=>'Membre',
-    'debut'=>'debut',
-    'fin'=>'fin',
-    'Nombre'=>'Nombre',
-    'nbr'=>'nbr',
-    'Abonnement'=>'Abonnement',
-    'etat'=>'etat',
-    'total'=>'total',
-    'remise'=>'remise',
-    'nbrmois'=>'nbrmois',
-    'versement'=>'versement',
-    'actions'=>'actions',    
-    'ID'=>'Id',
-    'label'=>'Label',
-    'Tarif'=>'Tarif',
-    'Titre Abonnement'=>'Titre Abonnement',
-    'actions'=>'Actions',    
-    'Nombre de fois par semaine'=>'Nombre de fois par semaine',
-    'id'=>'id',
-    'Renouvler'=>'Renouvler',
-    "Séances Restantes"=>"Séances Restantes",
-    'Matricule'=>'matricule',
-    'nom'=>'nom',
-    'Prénom'=>'prenom',
-    'Action'=>'Action',
-    'Profile'=>'Profile',
-    'Modifier'=>'Modifier',
-    'Supprimer'=>'Supprimer',
-    'ajouter'=>'ajouter',
-    'active'=>'Active',
-    'non_active'=>'Non Active'
 
-];
+    public function agent_bloque()
+    {
+        $user = User::find($this->agent_bloque);
+        return $user['name'] ?? '/';
+    }
+    public function agent_debloque()
+    {
+        $user = User::find($this->agent_debloque);
+        return $user['name'] ?? '/';
+    }
+    public function inscription()
+    {
+        return $this->belongsTo(Inscription::class);
+    }
+    
+}
