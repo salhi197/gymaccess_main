@@ -1,34 +1,3 @@
-<?php if(isset($inscription)) {?>
-
-                                                    <?php if($inscription->etat=="0") {?>
-                                                        <div class="col-md-1 offset-md-3">
-                                                            <div class="row">
-                                                                <span id="loading2" class="btn btn-danger"></span>
-                                                                <h1 class="m-0 text-white text-center">Expiré </h1>
-                                                            </div>
-                                                        </div>                         
-                                                    <?php } ?>
-
-                                                    <?php if($inscription->etat=="bloqued") {?>
-                                                        <div class="col-md-1 offset-md-3">
-                                                            <div class="row">
-                                                                <span id="loading3" class="btn btn-warning"></span>
-                                                                <h1 class="m-0 text-white text-center">Bloqué</h1>
-                                                            </div>
-                                                        </div>                         
-
-
-                                                    <?php } ?>
-
-                                                    <?php if($inscription->etat==1) {?>
-                                                        <div class="col-md-1 offset-md-3">
-                                                            <div class="row">
-                                                                <span id="loading" class="btn btn-success"></span>
-                                                                <h1 class="m-0 text-white text-center" style="font-size:50px;">Active</h1>
-                                                            </div>
-                                                        </div>                         
-
-                                                        
-                                                    <?php } ?>
-
-                                                <?php } ?>
+{{ $presence->getMembre() 
+        ? $presence->getMembre()['nom'] . ' ' . $presence->getMembre()['prenom'] 
+        : '' }}
