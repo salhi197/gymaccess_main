@@ -1,153 +1,39 @@
- 
-<!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
+$('#input_id').on('change', function () {
+        const inputVal = $('#input_id').val();
+        if (inputVal.length > 0) {
+            let number = parseInt(inputVal, 10);
+            let matricules = {!! json_encode(Config::get('matricules')) !!};
+            let exists = false;
 
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gestion Salle du sport</title>
-
-  <!-- Google Font: Source Sans Pro -->
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="{{asset('adminlte/plugins/fontawesome-free/css/all.min.css')}}">
-  <link href="{{asset('adminlte/plugins/toastr/toastr.css')}}" rel="stylesheet" />
-  <link rel="stylesheet" href="{{asset('adminlte/dist/css/adminlte.css')}}">
-  <link rel="stylesheet" href="{{asset('css/ares.css')}}">
-  @yield('styles')
-</head>
-
-<body class="hold-transition layout-navbar-fixed">
-<div class="wrapper">
-
-  <!-- Navbar -->
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-
-  <!-- Content Header (Page header) -->
-    @yield('header')
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <div class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-12">
-            @yield('content')
-          </div>
-        </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-<!-- footer -->
-<footer class="bg-dark text-center text-white footerbg">
-  <!-- Grid container -->
-  <div class="container p-4 pb-0">
-    <!-- Section: Social media -->
-    <section class="mb-4">
-      <!-- Facebook -->
-    </section>
-    <!-- Section: Social media -->
-  </div>
-  <!-- Grid container -->
-
-  <!-- Copyright -->
-  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-    
-  </div>
-  <!-- Copyright -->
-</footer>   
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-    <div class="p-3">
-      <h5>Title</h5>
-      <p>Sidebar content</p>
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-</div>
-<!-- ./wrapper -->
-
-<script src="{{asset('adminlte/plugins/jquery/jquery.min.js')}}"></script>
-<script src="{{asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{asset('adminlte/dist/js/adminlte.min.js')}}"></script>
-<script src="{{asset('adminlte/plugins/toastr/toastr.min.js')}}"></script>
-
-@yield('scripts')
-@yield('modals')
-
-
-<script>
-$(window).on("load",function(){
-  $(".loader-wrapper").fadeOut("slow");
-});
-
-
-let alreadyRedirected = false;
-
-    setInterval(() => {
-        if (alreadyRedirected) return;
-
-        $.ajax({
-            url: '/scan/read',
-            method: 'GET',
-            success: function (data) {
-                if (data.value.length>0) {
-              console.log(data.value)
-
-
-                    $.ajax({
-                        url: '/scan/clear',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function () {
-                            window.location.href = '/membre/membre/' + data.value;
-                        }
-                    });
-                
-
-
-
-                    // تنظيف الملف بعد القراءة
-                }else{
-              console.log('null')
+            matricules.map(function (matricule) {
+                if (matricule.matricule == number) {
+                    exists = true;
                 }
+            });
+
+            if (!exists) {
+                toastr.error('Carte Non valide');
+                $('#input_id').val("");
+                return;
             }
-        });
-    }, 1000);
 
-</script>
-<script type="text/javascript">
-var animateButton = function(e) {
-
-  e.preventDefault;
-  //reset animation
-  e.target.classList.remove('animate');
-  
-  e.target.classList.add('animate');
-  setTimeout(function(){
-    e.target.classList.remove('animate');
-  },700);
-};
-
-var bubblyButtons = document.getElementsByClassName("bubbly-button");
-
-for (var i = 0; i < bubblyButtons.length; i++) {
-  bubblyButtons[i].addEventListener('click', animateButton, false);
-}
-</script>
-
-</body>
-</html>
+            $.ajax({
+                url: '{{ url("/scan/write") }}',
+                method: 'POST',
+                data: {
+                    value: number,
+                    _token: $('meta[name="csrf-token"]').attr('content') 
+                },
+                success: function () {
+                    @if(\App\Setting::getSetting('minus') == 1)
+                        window.location.href = '/membre/compte/' + number;
+                    @else
+                        window.location.href = '/membre/edit/' + number;
+                    @endif
+                },
+                error: function () {
+                    toastr.error('فشل في إرسال البيانات.');
+                }
+            });
+        }
+    });
