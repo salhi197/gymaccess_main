@@ -1,39 +1,12 @@
-$('#input_id').on('change', function () {
-        const inputVal = $('#input_id').val();
-        if (inputVal.length > 0) {
-            let number = parseInt(inputVal, 10);
-            let matricules = {!! json_encode(Config::get('matricules')) !!};
-            let exists = false;
 
-            matricules.map(function (matricule) {
-                if (matricule.matricule == number) {
-                    exists = true;
-                }
-            });
 
-            if (!exists) {
-                toastr.error('Carte Non valide');
-                $('#input_id').val("");
-                return;
-            }
+Route::get('/scan/read', function () {
+    $path = storage_path('app/scans.txt');
+    $value = file_exists($path) ? trim(file_get_contents($path)) : '';
+    return response()->json(['value' => $value]);
+});
 
-            $.ajax({
-                url: '{{ url("/scan/write") }}',
-                method: 'POST',
-                data: {
-                    value: number,
-                    _token: $('meta[name="csrf-token"]').attr('content') 
-                },
-                success: function () {
-                    @if(\App\Setting::getSetting('minus') == 1)
-                        window.location.href = '/membre/compte/' + number;
-                    @else
-                        window.location.href = '/membre/edit/' + number;
-                    @endif
-                },
-                error: function () {
-                    toastr.error('فشل في إرسال البيانات.');
-                }
-            });
-        }
-    });
+Route::post('/scan/clear', function () {
+    file_put_contents(storage_path('app/scans.txt'), '');
+    return response()->json(['cleared' => true]);
+});
