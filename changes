@@ -1,12 +1,35 @@
+       
+
+setInterval(function () {
+        $.ajax({
+            url: "/actuel",
+            type: "POST",
+            data: {},
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                console.log("Actuel sent:", response.actuel);
 
 
-Route::get('/scan/read', function () {
-    $path = storage_path('app/scans.txt');
-    $value = file_exists($path) ? trim(file_get_contents($path)) : '';
-    return response()->json(['value' => $value]);
-});
-
-Route::post('/scan/clear', function () {
-    file_put_contents(storage_path('app/scans.txt'), '');
-    return response()->json(['cleared' => true]);
-});
+                  $.ajax({
+                    url: "http://gym.deltti.com/api/update/actuel",
+                    type: "POST",
+                    data: JSON.stringify({ actuel: 15 }), // غيّر القيمة حسب الحاجة                    
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                  });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error sending actuel:", error);
+            }
+        });
+    }, 3000); 
