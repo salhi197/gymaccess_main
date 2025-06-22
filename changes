@@ -1,14 +1,14 @@
-if(json_decode($request['abonnement'])->id==79+2 or json_decode($request['abonnement'])->id==79+5 or json_decode($request['abonnement'])->id==79+8 or json_decode($request['abonnement'])->id==79+5 ){
+if(json_decode($request['abonnement2'])->id==79+2 or json_decode($request['abonnement2'])->id==79+5 or json_decode($request['abonnement2'])->id==79+8 or json_decode($request['abonnement2'])->id==79+5 ){
                 $fin =  Carbon::parse($request['debut'])->addDays(7)->format('Y-m-d');
                 $inscription->fin=$fin; 
             }
-            if(json_decode($request['abonnement'])->id==79+3 or json_decode($request['abonnement'])->id==79+6 or json_decode($request['abonnement'])->id==79+9 or json_decode($request['abonnement'])->id==79+12 ){
+            if(json_decode($request['abonnement2'])->id==79+3 or json_decode($request['abonnement2'])->id==79+6 or json_decode($request['abonnement2'])->id==79+9 or json_decode($request['abonnement2'])->id==79+12 ){
                 $fin =  Carbon::parse($request['debut'])->addDays(15)->format('Y-m-d');
                 $inscription->fin=$fin; 
             }
 
 
-            if(json_decode($request['abonnement'])->id==79+4 or json_decode($request['abonnement'])->id==79+7 or json_decode($request['abonnement'])->id==79+10 or json_decode($request['abonnement'])->id==79+13 ){
+            if(json_decode($request['abonnement2'])->id==79+4 or json_decode($request['abonnement2'])->id==79+7 or json_decode($request['abonnement2'])->id==79+10 or json_decode($request['abonnement2'])->id==79+13 ){
                 $fin =  Carbon::parse($request['debut'])->addDays(15)->format('Y-m-d');
                 $inscription->fin=$fin; 
             }  
