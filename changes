@@ -1,14 +1,75 @@
-if(json_decode($request['abonnement2'])->id==79+2 or json_decode($request['abonnement2'])->id==79+5 or json_decode($request['abonnement2'])->id==79+8 or json_decode($request['abonnement2'])->id==79+5 ){
-                $fin =  Carbon::parse($request['debut'])->addDays(7)->format('Y-m-d');
-                $inscription->fin=$fin; 
-            }
-            if(json_decode($request['abonnement2'])->id==79+3 or json_decode($request['abonnement2'])->id==79+6 or json_decode($request['abonnement2'])->id==79+9 or json_decode($request['abonnement2'])->id==79+12 ){
-                $fin =  Carbon::parse($request['debut'])->addDays(15)->format('Y-m-d');
-                $inscription->fin=$fin; 
-            }
+ $('.btnremove').on('click',function () {
+                // $('#tablebody').html('');
+                var selected_card = $('#selected_card').val()
+                console.log('selected_card')
+                console.log(selected_card)
+                    var currentDate = new Date();
+                    var localHour = currentDate.getHours();
+
+                for (var i = 0; i < jsonObj.length; i++) {
+                    pos = i;
+                  if (jsonObj[i].numero == selected_card) {
+
+                    if(jsonObj[i].qte>0){
+                            if(jsonObj[i].heure){
+                                var timeParts = jsonObj[i].heure.split(':')
+                                var hours = parseInt(timeParts[0],10)
+                                    if(localHour>hours){
+                                        jsonObj[i].discount =parseInt(jsonObj[i].discount)- parseInt(jsonObj[i].remise);    
+                                    }
+
+                            }
+
+                            var ticketIdsString = document.getElementById('ticketIds').value;
+
+                            // Split the string into an array of IDs
+                            var ticketIdsArray = ticketIdsString.split(',');
+                            var lastId = ticketIdsArray[ticketIdsArray.length - 1];
+
+                            // Remove the last ID from the array
+                            ticketIdsArray.pop();
+
+                            // Join the array back into a string with commas
+                            var updatedTicketIdsString = ticketIdsArray.join(',');
+                            // Update the value of the hidden input field
+                            //document.getElementById('ticketIds').value = updatedTicketIdsString;
+                            console.log(updatedTicketIdsString); // Outputs: "1,2,3,4"            
+                              $.ajax({  
+                                      type: 'GET',
+                                      data: {tickets:JSON.stringify(jsonObj), _token: CSRF_TOKEN,selected_card:selected_card},
+                                      dataType: 'JSON',
+                                      url: "/aqua/ticket/minus/"+lastId+"/"+selected_card,
+                                        success: function(data){
+                                            var ticketIdsString = document.getElementById('ticketIds').value;
+
+                                            // Split the string into an array of IDs
+                                            var ticketIdsArray = ticketIdsString.split(',');
+                                            var arr =   ticketIdsArray
+                                            arr = arr.filter(item => item!=data['ticket_id'])          
+                                            console.log($('#ticketIds').val(),data['ticket_id'],arr)
+                                            document.getElementById('ticketIds').value = arr;
+                                           
+                                        },
+                                      error:function(err){
+                                        console.log(err)
+                                      }
+                                    });
 
 
-            if(json_decode($request['abonnement2'])->id==79+4 or json_decode($request['abonnement2'])->id==79+7 or json_decode($request['abonnement2'])->id==79+10 or json_decode($request['abonnement2'])->id==79+13 ){
-                $fin =  Carbon::parse($request['debut'])->addDays(15)->format('Y-m-d');
-                $inscription->fin=$fin; 
-            }  
+                        jsonObj[i].qte = jsonObj[i].qte-1;                    
+                        console.log(jsonObj)
+                        renderTable(jsonObj)
+                        calculateSum(jsonObj)
+
+                        break;
+
+
+                    }
+
+                  }
+
+                }
+                //////////////////////////////////////////////////////////////////////////////////
+
+
+            })
