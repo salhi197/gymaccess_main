@@ -1,22 +1,33 @@
-    public function minus($id_ticket,$selected_card)
-    {
+Route::get('/tickets-today', function () {
+    $ticketsData = [];
 
-       $tarif = Tarif::find($selected_card);
-        $user_id = Auth::user()->id;
-        $label = $tarif['label'];
-        $ticket = Ticket::where('user',$user_id)->where('type','=',$label)->orderBy('id','desc')->first();
-        $id = $ticket->id;
-    $ticket->delete();
-// 
-        // return redirect()->route('ticket.index')->with('success', 'modifié avec succés ');  
+    // تاريخ اليوم
+    $today = Carbon::today()->toDateString();
 
-        return response()->json([
-            'id' => $ticket->id,
-            'ticket_id' => $id,
+    // استعلام المدفوعات الخاصة اليوم فقط
+    $payments = DB::table('payments')
+        ->whereDate('created_at', $today)
+        ->get();
 
-            'user_id' => $user_id,
-            'selected_card' => $selected_card,
-            'label' => $label,
+    foreach ($payments as $payment) {
+        $tickets = json_decode($payment->tickets, true);
 
-        ]);
+        if (!$tickets) continue;
+
+        foreach ($tickets as $ticket) {
+            $nameParts = explode(' ', $ticket['name']);
+            $baseName = strtoupper($nameParts[0]);
+
+            if (!isset($ticketsData[$baseName])) {
+                $ticketsData[$baseName] = 0;
+            }
+
+            $ticketsData[$baseName] += (int)$ticket['qte'];
+        }
     }
+
+    // عرض النتائج في المتصفح
+    foreach ($ticketsData as $name => $total) {
+        echo "$name: $total<br>";
+    }
+});
